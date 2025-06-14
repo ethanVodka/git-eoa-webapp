@@ -1,6 +1,6 @@
 package com.eoa.webapp.ea.ic.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,10 +15,10 @@ import com.eoa.webapp.ea.ic.dto.TestOutDto;
 
 @CrossOrigin("*")
 @RestController
+@RequiredArgsConstructor
 public class TestController {
 
-	@Autowired
-    TestService testService;
+    private final TestService testService;
 
     @GetMapping("/api/testRequest")
     public String testRequest() {
@@ -27,14 +27,14 @@ public class TestController {
 
     @PostMapping("/api/testPost")
     public ResponseEntity<Object> testPost(@RequestBody TestInDto dto){
-        return new ResponseEntity<>(dto, HttpStatus.OK);
+        return ResponseEntity.ok(dto);
     }
 
     @PostMapping("/api/domaTest")
     public ResponseEntity<Object> domaTest(@RequestBody TestInDto dto){
-        TestOutDto outDto = testService.test(dto);
-
-        return new ResponseEntity<>(outDto, HttpStatus.OK);
+        return testService.test(dto)
+                .<ResponseEntity<Object>>map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
 }
