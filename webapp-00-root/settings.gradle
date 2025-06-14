@@ -1,0 +1,5 @@
+rootProject.name = 'webapp-00-root'
+includeFlat 'webapp-01-main'
+includeFlat 'webapp-02-core'
+includeFlat 'webapp-03-common'
+includeFlat 'webapp-04-ea'

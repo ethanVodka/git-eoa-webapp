@@ -1,0 +1,14 @@
+group = 'com.eoa.webapp'
+version = '0.0.1-SNAPSHOT'
+
+dependencies {
+	// common モジュール固有の依存関係があれば記載
+}
+
+jar {
+	enabled = true
+}
+
+test {
+	useJUnitPlatform()
+}

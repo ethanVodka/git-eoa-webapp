@@ -1,0 +1,19 @@
+group = 'com.eoa.webapp.main'
+version = '0.0.1-SNAPSHOT'
+
+dependencies {
+    // main モジュール固有の依存関係
+    // ※ 実行可能アプリケーションとして、ea モジュール（webapp-04-ea）への依存を追加
+    implementation project(':webapp-02-core')
+    implementation project(':webapp-03-common')
+    implementation project(':webapp-04-ea')
+}
+
+// main モジュールは実行可能な JAR としてビルドするため、bootJar を有効化
+bootJar {
+    enabled = true
+}
+
+test {
+    useJUnitPlatform()
+}

@@ -1,0 +1,95 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.4.2'
+    id 'io.spring.dependency-management' version '1.1.7'
+	id 'com.diffplug.eclipse.apt' version "4.2.0"
+    id 'org.domaframework.doma.compile' version "3.0.1"
+}
+
+group = 'com.eoa.webapp'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('springCloudGcpVersion', "6.0.0")
+    set('springCloudVersion', "2024.0.0")
+}
+
+subprojects {
+    apply plugin: "java"
+    apply plugin: "org.springframework.boot"
+    apply plugin: "io.spring.dependency-management"
+	apply plugin: "com.diffplug.eclipse.apt"
+    apply plugin: "org.domaframework.doma.compile"
+
+    // 共通の group/version（必要に応じてサブプロジェクト側で上書き可）
+    group = 'com.eoa.webapp'
+    version = '0.0.1-SNAPSHOT'
+
+    repositories {
+        mavenCentral()
+    }
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+        implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'com.google.cloud:spring-cloud-gcp-starter'
+        implementation 'com.google.cloud:spring-cloud-gcp-starter-pubsub'
+        implementation 'com.google.cloud:spring-cloud-gcp-starter-storage'
+        
+        compileOnly 'org.projectlombok:lombok'
+        runtimeOnly 'org.postgresql:postgresql'
+        
+        annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+        annotationProcessor 'org.projectlombok:lombok'
+
+        // Doma 関連
+        implementation 'org.seasar.doma:doma-core:2.56.0'
+        implementation 'org.seasar.doma.boot:doma-spring-boot-starter:1.7.0'
+        compileOnly 'org.seasar.doma:doma-processor:2.56.0'
+        annotationProcessor 'org.seasar.doma:doma-processor:2.56.0'
+        
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
+
+    dependencyManagement {
+        imports {
+            mavenBom "com.google.cloud:spring-cloud-gcp-dependencies:${springCloudGcpVersion}"
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+    }
+
+    // 各サブプロジェクトはデフォルトでは JAR/bootJar の生成を無効とする（必要に応じて上書き）
+    bootJar {
+        enabled = false
+    }
+    jar {
+        enabled = false
+    }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+springBoot {
+    // メインクラスは main モジュールに設定されています
+    mainClass = 'com.eoa.webapp.main.MainApplication'
+}

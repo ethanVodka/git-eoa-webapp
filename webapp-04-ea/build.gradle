@@ -1,0 +1,15 @@
+group = 'com.eoa.webapp.ea'
+version = '0.0.1-SNAPSHOT'
+
+dependencies {
+    // ea モジュール固有の依存関係があれば記載
+    implementation project(':webapp-03-common')
+}
+
+jar {
+    enabled = true
+}
+
+test {
+    useJUnitPlatform()
+}
